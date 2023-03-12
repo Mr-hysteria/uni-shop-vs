@@ -1,0 +1,1 @@
+<view class="my-search data-v-27f38178"><u-search bind:input="__e" vue-id="d67bab7c-1" input-align="center" placeholder="搜索目标内容" showAction="{{false}}" value="{{inputword}}" data-event-opts="{{[['^input',[['__set_model',['','inputword','$event',[]]]]]]}}" class="data-v-27f38178" bind:__l="__l"></u-search></view>
