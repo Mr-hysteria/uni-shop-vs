@@ -108,7 +108,7 @@
 			view{
 				float: left;
 				image{
-					min-height:190rpx
+					min-height:190rpx;
 					margin-left: 12rpx;
 					margin-bottom: 10rpx;
 				}
