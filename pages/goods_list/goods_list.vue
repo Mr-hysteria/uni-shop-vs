@@ -8,7 +8,7 @@
         <view class="goods-list">
             <view class="goods-item" v-for="item in goodsList" :key="item.goods_id">
                 <view class="goods-image">
-                    <image :src="item.goods_small_logo" mode="scaleToFill" />
+                    <image :src="item.goods_small_logo || defaultImage" mode="scaleToFill" />
                 </view>
                 <view class="goods-info">
                     <view class="goods-name">{{ item.goods_name }}</view>
@@ -32,19 +32,31 @@ export default {
             }, {
                 name: '价格'
             }],
-            goodsList: []
+            goodsList: [],
+            defaultImage:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-pyPqoU0XSQf5NwZzLbMH-L4NIs45OpQuxg&usqp=CAU'
         }
     },
     onLoad(options) {
-        this.queryParams = options
+        this.queryParams = {
+            query:options.query,
+            cid:options.cid,
+            // 页码
+            pagenum:1,
+            pagesize:20
+        }
+        this.getGoodsList()
+    },
+    onReachBottom() {
+        this.queryParams.pagenum+=1
         this.getGoodsList()
     },
     methods: {
         async getGoodsList() {
             const res = await getGoodsSearchList(this.queryParams)
-            console.log("返回的总数据：", res)
-            this.goodsList = res.goods
-
+            // console.log("返回的总数据：", res)
+            // this.goodsList = res.goods
+            this.goodsList.push(...res.goods)
+            console.log("当前总数据", this.goodsList)
         }
     }
 }
