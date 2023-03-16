@@ -4,6 +4,13 @@
 	},
   "pages": [
     {
+      "path": "pages/cart/cart",
+      "style": {
+        "navigationBarTitleText": "购物车",
+        "enablePullDownRefresh": false
+      }
+    },
+    {  
       // 写 固定了，之后要去掉参数
       "path": "pages/goods_detail/goods_detail",
       "style": {
@@ -32,13 +39,6 @@
       "style": {
         "navigationBarTitleText": "商品列表",
         "enablePullDownRefresh": true
-      }
-    },
-    {
-      "path": "pages/cart/cart",
-      "style": {
-        "navigationBarTitleText": "购物车",
-        "enablePullDownRefresh": false
       }
     },
     {

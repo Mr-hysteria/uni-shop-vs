@@ -3,8 +3,10 @@ import App from './App'
 // #ifndef VUE3
 import Vue from 'vue'
 import uView from "uview-ui";
+import store from './store'
 Vue.use(uView);
 Vue.config.productionTip = false
+Vue.prototype.$store = store
 App.mpType = 'app'
 
 try {
@@ -36,6 +38,7 @@ try {
 } catch (error) { }
 
 const app = new Vue({
+  store,
   ...App
 })
 app.$mount()
