@@ -1,5 +1,5 @@
 <template>
-	<view>
+	<view class="bottom-of-the-page">
 		<!-- 安全区 -->
 		<u-status-bar></u-status-bar>
 		<!-- 返回箭头 -->
@@ -31,6 +31,20 @@
 		<view class="goods_introduce">
 			<view class="goods_introduce_title">图文详情</view>
 			<rich-text :nodes="GoodsInfo.goods_introduce" class="goods_introduce_content"></rich-text>
+		</view>
+		<!-- 4。底部操作栏 -->
+		<view class="bottom-bar">
+			<view class="icon-group">
+				<u-icon name="kefu-ermai" color="#333" size="40rpx"></u-icon>
+				<view>联系客服</view>
+				<button open-type="contact">联系</button>
+			</view>
+			<view class="icon-group">
+				<u-icon name="shopping-cart" color="#333" size="40rpx"></u-icon>
+				<view>购物车</view>
+			</view>
+			<view class="btn">加入购物车</view>
+			<view class="btn">立即购买</view>
 		</view>
 	</view>
 </template>
@@ -67,7 +81,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .navigator-back {
 	width: 70rpx;
 	height: 70rpx;
@@ -130,5 +144,47 @@ export default {
 		}
 	}
 
+}
+.bottom-bar{
+	display: flex;
+	height: 94rpx;
+	align-items: center;
+	background-color:#FFFFFF;
+	border-top: 1rpx solid #ddd;
+	position: fixed;
+	left: 0;
+	width: 100%;
+	bottom: 0;
+	.icon-group{
+		flex: 1;
+		font-size: 22rpx;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+		position: relative;
+		button{
+			position: absolute;
+			opacity: 0;
+		}
+	}
+	.btn{
+		width: 196rpx;
+		height: 60rpx;
+		display: flex;
+		justify-content: center;
+		background-color: #FCAA23;
+		align-items: center;
+		border-radius: 30rpx;
+		margin: 0 10rpx;
+		font-size: 26rpx;
+		color: #fff;
+		&:last-child{
+			background-color: #EA4350
+		}
+	}
+}
+.bottom-of-the-page{
+	padding-bottom: 120rpx;
 }
 </style>
