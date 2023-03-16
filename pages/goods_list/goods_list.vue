@@ -6,7 +6,7 @@
         <u-tabs :list="tabsList" lineColor="#eb4450"></u-tabs>
         <!-- 商品列表 -->
         <view class="goods-list">
-            <view class="goods-item" v-for="item in goodsList" :key="item.goods_id">
+            <navigator :url="`/pages/goods_detail/goods_detail?goods_id=${item.goods_id}`" class="goods-item" v-for="item in goodsList" :key="item.goods_id">
                 <view class="goods-image">
                     <image :src="item.goods_small_logo || defaultImage" mode="scaleToFill" />
                 </view>
@@ -14,7 +14,7 @@
                     <view class="goods-name">{{ item.goods_name }}</view>
                     <view class="goods-price">{{ item.goods_price }}</view>
                 </view>
-            </view>
+            </navigator>
         </view>
     </view>
 </template>
@@ -32,23 +32,47 @@ export default {
             }, {
                 name: '价格'
             }],
+            //商品总条数判断
+            total: 0,
             goodsList: [],
-            defaultImage:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-pyPqoU0XSQf5NwZzLbMH-L4NIs45OpQuxg&usqp=CAU'
+            defaultImage: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-pyPqoU0XSQf5NwZzLbMH-L4NIs45OpQuxg&usqp=CAU'
         }
     },
     onLoad(options) {
         this.queryParams = {
-            query:options.query,
-            cid:options.cid,
+            query: options.query,
+            cid: options.cid,
             // 页码
-            pagenum:1,
-            pagesize:20
+            pagenum: 1,
+            pagesize: 20
         }
         this.getGoodsList()
     },
+    // 下拉刷新
+    async onPullDownRefresh() {
+        // 	1. 配置
+        // 	2. 清空列表数据
+        this.goodsList=[]
+        // 	3. 重置页码与商品总条数(这是不同的)
+        this.queryParams.pagenum = 1
+        this.total = 0
+        // 	4. 发送新的请求
+        await this.getGoodsList()
+        // 	5. 关闭下拉刷新
+        uni.stopPullDownRefresh()
+    },
     onReachBottom() {
-        this.queryParams.pagenum+=1
-        this.getGoodsList()
+        if (this.goodsList.length < this.total) {
+            this.queryParams.pagenum += 1
+            this.getGoodsList()
+        }
+        else {
+            uni.showToast({
+                title: '到底了~',
+                icon: 'none',
+            })
+        }
+
     },
     methods: {
         async getGoodsList() {
@@ -56,7 +80,8 @@ export default {
             // console.log("返回的总数据：", res)
             // this.goodsList = res.goods
             this.goodsList.push(...res.goods)
-            console.log("当前总数据", this.goodsList)
+            this.total = res.total
+            // console.log("商品列表goodsList", this.goodsList)
         }
     }
 }
@@ -103,4 +128,5 @@ export default {
             }
         }
     }
-}</style>
+}
+</style>

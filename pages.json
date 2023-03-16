@@ -1,8 +1,18 @@
 {
-  "easycom": {
-    "^u-(.*)": "@/uni_modules/uview-ui/components/u-$1/u-$1.vue"
-  },
+	"easycom": {
+		"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
+	},
   "pages": [
+    {
+      // 写 固定了，之后要去掉参数
+      "path": "pages/goods_detail/goods_detail",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "商品详情",
+        "navigationBarTextStyle": "black",
+        "enablePullDownRefresh": false
+      }
+    },
     {
       "path": "pages/category/category",
       "style": {
@@ -21,14 +31,7 @@
       "path": "pages/goods_list/goods_list",
       "style": {
         "navigationBarTitleText": "商品列表",
-        "enablePullDownRefresh": false
-      }
-    },
-    {
-      "path": "pages/goods_detail/goods_detail",
-      "style": {
-        "navigationBarTitleText": "商品详情页",
-        "enablePullDownRefresh": false
+        "enablePullDownRefresh": true
       }
     },
     {
