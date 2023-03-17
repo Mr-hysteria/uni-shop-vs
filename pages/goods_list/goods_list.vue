@@ -91,7 +91,7 @@ export default {
 .goods-list {
     .goods-item {
         display: flex;
-        border-bottom: 1rpx;
+        border-bottom: 1rpx solid #e0d2d2; 
         padding: 25rpx;
 
         .goods-image {

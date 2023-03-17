@@ -13,7 +13,7 @@ export async function getGoodsSearchList(data){
 export async function getGoodsDetail(data){
     let res1 =  await request({
         url:'/goods/detail',
-        // 后面的是测试用的
+        // 有数据就直接data,没有就用自定义对象
         data: Object.keys(data).length > 0 ? data:{goods_id:'17925'} 
     })
     return res1.data.message

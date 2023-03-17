@@ -6,26 +6,53 @@ Vue.use(Vuex); //vue的插件机制
 //Vuex.Store 构造器选项
 const store = new Vuex.Store({
   state: {
-    GoodsList: uni.getStorageSync('GoodsList')||[],
+    cartList: uni.getStorageSync("cartList") || [],
+  },
+  getters:{
+    isAllSelect(state){
+      return state.cartList.every((item)=>{return item.goods_select==true})
+    }
   },
   mutations: {
-    addList(state, payload) {
-      const flagIdex = state.GoodsList.findIndex(
-        (obj) => obj.goods_name == payload
+    addCart(state, payload) {
+      const flagIdex = state.cartList.findIndex(
+        (obj) => obj.goods_id == payload.goods_id
       );
       if (flagIdex > -1) {
-		// 已存在，数量加一
-        state.GoodsList[flagIdex].goods_count += 1;
+        // 已存在，数量加一
+        state.cartList[flagIdex].goods_count += 1;
       } else {
-		// 不存在，增加商品
-        state.GoodsList.push({
-          goods_id: Date.now(),
+        // 不存在，增加商品
+        state.cartList.push({
+          // 基本信息
+          goods_id: payload.goods_id,
+          goods_small_logo: payload.goods_small_logo,
+          goods_name: payload.goods_name,
+          goods_price: payload.goods_price,
+          // 用户可以更改信息
           goods_count: 1,
-          goods_name: payload,
-        })
-		uni.setStorageSync('GoodsList', state.GoodsList)
+          goods_select: false,
+        });
+        uni.setStorageSync("cartList", state.cartList);
       }
     },
+    changeSelect(state, payload) {
+      const index = state.cartList.findIndex((obj) => {
+        return obj.goods_id == payload;
+      });
+      state.cartList[index].goods_select =!state.cartList[index].goods_select;
+      uni.setStorageSync("cartList", state.cartList);
+    },
+    changeAllSelect(state){
+      // 如果flag为真，说明已经全选，那么全部变为false
+      // 如果flag为假，那么说明部分或者全部都没有选，那么全部设为true
+      const flag = state.cartList.every((item)=>{return item.goods_select==true})
+      if(flag){
+        state.cartList.forEach((item)=>{ item.goods_select=false})
+      }else{
+        state.cartList.forEach((item)=>{ item.goods_select=true})
+      }
+    }
   },
 });
 export default store;

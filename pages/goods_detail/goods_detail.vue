@@ -42,8 +42,12 @@
 			<view class="icon-group">
 				<u-icon name="shopping-cart" color="#333" size="40rpx"></u-icon>
 				<view>购物车</view>
+				<view class="router">
+					<navigator url="/pages/cartReal/cartReal" open-type="switchTab">
+					</navigator>
+				</view>
 			</view>
-			<view class="btn">加入购物车</view>
+			<view class="btn" @click="handleAddCart">加入购物车</view>
 			<view class="btn">立即购买</view>
 		</view>
 	</view>
@@ -60,21 +64,32 @@ export default {
 		}
 	},
 	onLoad(options) {
-		// console.log(options)
+		// options传过来的是id，字符串形式的
 		this.queryParams = options
 		this.getGoodsDetailList()
 	},
 	methods: {
+		// 获取商品详情
 		async getGoodsDetailList() {
 			const res = await getGoodsDetail(this.queryParams)
-			console.log("商品详情", res)
 			this.GoodsInfo = res
-			this.GoodsInfo.goods_introduce = this.GoodsInfo.goods_introduce.replace(/<img/g,'<img class="img"')
-			// this.GoodsDetailList = res
+			// console.log("商品信息", res)
+			this.GoodsInfo.goods_introduce = this.GoodsInfo.goods_introduce.replace(/<img/g, '<img class="img"')
 		},
+		// 大图查看
 		preview() {
 			uni.previewImage({
 				urls: this.GoodsInfo.pics.map((val) => { return val.pics_big_url })
+			})
+		},
+		// 加入购物车
+		handleAddCart() {
+			// 把本页商品信息传入vuex，那边进行处理
+			this.$store.commit('addCart', this.GoodsInfo)
+			uni.showToast({
+				title: '加入成功',
+				icon: 'success',
+				mask: true
 			})
 		}
 	}
@@ -104,22 +119,26 @@ export default {
 		display: flex;
 		padding-bottom: 20rpx;
 		justify-content: space-between;
-		.price{
+
+		.price {
 			color: red;
-			&::before{
+
+			&::before {
 				content: '¥';
 				font-size: 80%;
 				margin-right: 5rpx;
 			}
 		}
+
 		// margin-left: 100rpx;
 		// margin-right: 80rpx;
-		.icon-group{
+		.icon-group {
 			width: 44rpx;
 			height: 44rpx;
 			position: relative;
 			margin-right: 10rpx;
-			button{
+
+			button {
 				position: absolute;
 				width: 44rpx;
 				height: 44rpx;
@@ -130,32 +149,36 @@ export default {
 		}
 	}
 }
-.goods_introduce{
-	.goods_introduce_title{
+
+.goods_introduce {
+	.goods_introduce_title {
 		font-size: 28rpx;
 		height: 100rpx;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
-	.goods_introduce_content{
-		.img{
+
+	.goods_introduce_content {
+		.img {
 			vertical-align: middle;
 		}
 	}
 
 }
-.bottom-bar{
+
+.bottom-bar {
 	display: flex;
 	height: 94rpx;
 	align-items: center;
-	background-color:#FFFFFF;
+	background-color: #FFFFFF;
 	border-top: 1rpx solid #ddd;
 	position: fixed;
 	left: 0;
 	width: 100%;
 	bottom: 0;
-	.icon-group{
+
+	.icon-group {
 		flex: 1;
 		font-size: 22rpx;
 		display: flex;
@@ -163,12 +186,25 @@ export default {
 		flex-direction: column;
 		align-items: center;
 		position: relative;
-		button{
+
+		button {
 			position: absolute;
 			opacity: 0;
 		}
+
+		.router {
+			position: absolute;
+
+			// background-color: pink;
+			navigator {
+				height: 60rpx;
+				width: 60rpx;
+			}
+
+		}
 	}
-	.btn{
+
+	.btn {
 		width: 196rpx;
 		height: 60rpx;
 		display: flex;
@@ -179,12 +215,14 @@ export default {
 		margin: 0 10rpx;
 		font-size: 26rpx;
 		color: #fff;
-		&:last-child{
+
+		&:last-child {
 			background-color: #EA4350
 		}
 	}
 }
-.bottom-of-the-page{
+
+.bottom-of-the-page {
 	padding-bottom: 120rpx;
 }
 </style>

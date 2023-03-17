@@ -1,65 +1,194 @@
 <template>
     <view>
-        <u-search placeholder="请输入商品" v-model="keyword" @search="handlerSearch" actionText="添加"
-            @custom="handlerSearch"></u-search>
-        <view class="title">
-            <view class="item">商品</view>
-            <view class="item">操作</view>
+        <!-- 购物车商品列表 -->
+        <view class="goods-list">
+            <view class="cart-item" v-for="item in cartList" :key="item.goods_id">
+                <radio :checked="item.goods_select" color="#EA4350" @click="changeGoods_select(item.goods_id)" />
+                <navigator :url="`/pages/goods_detail/goods_detail?goods_id=${item.goods_id}`" class="goods-item">
+                    <view class="goods-image">
+                        <image :src="item.goods_small_logo || defaultImage" mode="scaleToFill" />
+                    </view>
+                    <view class="goods-info">
+                        <view class="goods-name">{{ item.goods_name }}</view>
+                        <view class="goods-price">{{ item.goods_price }}</view>
+                    </view>
+                </navigator>
+                <view class="goods-count">
+                    <u-number-box v-model="item.goods_count" @change="changeList"></u-number-box>
+                </view>
+            </view>
         </view>
-        <view class="content" v-for="item in GoodsList" :key="item.goods_id">
-            <view class="item">{{ item.goods_name }}</view>
-            <view class="item">
-                <u-number-box v-model="item.goods_count" @change="changeList(item.goods_count)"></u-number-box>
+        <!-- 底部操作栏 -->
+        <view class="bottom-bar">
+            <!-- 选择 -->
+            <view class="select">
+                <radio class="select-radio" :checked="isAllSelect" color="#EA4350" @click="changeAllSelect" />
+                <text class="select-text">全选</text>
+            </view>
+            <!-- 总计 -->
+            <view class="total">
+                <text class="total-name">合计:</text>
+                <view class="total-price">999</view>
+            </view>
+            <!-- 结算 -->
+            <view class="account">
+                结算
             </view>
         </view>
     </view>
 </template>
 
 <script>
+import store from '../../store/store_simple'
+
 export default {
     data() {
         return {
-            keyword: '',
-            goods_name_changeFlag: ''
+            defaultImage: '',
+            goods_name_changeFlag: true
+
         }
     },
     computed: {
-        GoodsList() {
-            return this.$store.state.GoodsList
+        cartList() {
+            // console.log(this.$store.state.cartList)
+            return this.$store.state.cartList
+        },
+        isAllSelect(){
+            return this.$store.getters.isAllSelect
         }
     },
-    // 用监听属性更好
+    // 用监听属性监视购物车数量是否增加
     watch: {
         goods_name_changeFlag() {
-            console.log("执行存储")
-            uni.setStorageSync('GoodsList', this.$store.state.GoodsList)
+            // console.log("执行存储")
+            uni.setStorageSync('cartList', this.$store.state.cartList)
         }
     },
     methods: {
-        handlerSearch() {
-            this.$store.commit("addList", this.keyword)
-            // 重置搜索框
-            this.keyword = ''
+        changeList() {
+            // 点击就改变数据，从而让watch监听
+            this.goods_name_changeFlag = !this.goods_name_changeFlag
         },
-        changeList(val) {
-            this.goods_name_changeFlag = val
+        changeGoods_select(goods_id) {
+            this.$store.commit("changeSelect", goods_id)
+        },
+        // 全选状态改变
+        changeAllSelect(){
+            this.$store.commit("changeAllSelect")
         }
     }
 }
 </script>
 
 <style lang="scss" >
-.title,
-.content {
-    display: flex;
+.goods-list {
+    .cart-item {
+        display: flex;
+        position: relative;
+        border-bottom: 1rpx solid #e0d2d2;
+        padding: 25rpx;
+        align-items: center;
 
-    .item {
+        radio {
+            padding-right: 10rpx;
+        }
+
+        .goods-item {
+            display: flex;
+
+            .goods-image {
+                margin-right: 29rpx;
+
+                image {
+                    height: 190rpx;
+                    width: 190rpx;
+                }
+            }
+
+            .goods-info {
+                font-size: 24rpx;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 27rpx;
+
+                .goods-name {
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                }
+
+                .goods-price {
+                    color: red;
+
+                    &::before {
+                        content: '¥';
+                        margin-right: 5rpx;
+                    }
+                }
+            }
+        }
+
+        .goods-count {
+            position: absolute;
+            right: 20rpx;
+            bottom: 20rpx;
+        }
+    }
+}
+
+// 底部操作栏
+.bottom-bar {
+    height: 80rpx;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-top: 1px solid #e0d2d2;
+    display: flex;
+    padding: 0 20rpx;
+    align-items: center;
+    .select {
+        
+        .select-text {
+            font-size: 21rpx;
+            margin:0 20rpx;
+            color: #8A8A8A;
+            margin-left: 0;
+        }
+    }
+
+    .total {
         flex: 1;
-        border: 1rpx solid #ddd;
+        display: flex;
+        align-items: center;
+        .total-name {
+            font-size: 26rpx;
+            margin-right: 10rpx;
+        }
+
+        .total-price {
+            color: #EA4350;
+            &::before{
+                content: '¥';
+            }
+        }
+    }
+
+    .account {
+        background-color:#EA4350 ;
+        color: #fff;
+        font-size: 22rpx;
+        width: 150rpx;
+        height: 52rpx;
+        border-radius: 26rpx;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 20rpx;
     }
 }
 </style>
+
