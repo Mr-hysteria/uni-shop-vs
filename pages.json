@@ -13,12 +13,11 @@
     {
       "path": "pages/cart/cart",
       "style": {
-        "navigationBarTitleText": "购物车",
+        "navigationBarTitleText": "简易购物车",
         "enablePullDownRefresh": false
       }
     },
     {  
-      // 写 固定了，之后要去掉参数
       "path": "pages/goods_detail/goods_detail",
       "style": {
         "navigationStyle": "custom",
@@ -80,7 +79,7 @@
         "text": "分类"
       },
       {
-        "pagePath": "pages/cart/cart",
+        "pagePath": "pages/cartReal/cartReal",
         "iconPath": "static/icons/cart.png",
         "selectedIconPath": "static/icons/cart-o.png",
         "text": "购物车"

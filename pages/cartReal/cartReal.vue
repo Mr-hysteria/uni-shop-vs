@@ -9,7 +9,7 @@
         <view class="content" v-for="item in GoodsList" :key="item.goods_id">
             <view class="item">{{ item.goods_name }}</view>
             <view class="item">
-                <u-number-box v-model="item.goods_count" @change="changeList"></u-number-box>
+                <u-number-box v-model="item.goods_count" @change="changeList(item.goods_count)"></u-number-box>
             </view>
         </view>
     </view>
@@ -19,12 +19,20 @@
 export default {
     data() {
         return {
-            keyword: ''
+            keyword: '',
+            goods_name_changeFlag: ''
         }
     },
     computed: {
         GoodsList() {
             return this.$store.state.GoodsList
+        }
+    },
+    // 用监听属性更好
+    watch: {
+        goods_name_changeFlag() {
+            console.log("执行存储")
+            uni.setStorageSync('GoodsList', this.$store.state.GoodsList)
         }
     },
     methods: {
@@ -33,11 +41,8 @@ export default {
             // 重置搜索框
             this.keyword = ''
         },
-        changeList() {
-            console.log("按一次")
-            setTimeout(() => {
-                uni.setStorageSync('GoodsList', this.$store.state.GoodsList)
-            }, 1000)
+        changeList(val) {
+            this.goods_name_changeFlag = val
         }
     }
 }
