@@ -13,13 +13,17 @@ const store = new Vuex.Store({
     isAllSelect(state){
       return state.cartList.every((item)=>{return item.goods_select==true})
     },
-    // 总计金额
+    // 已选商品总计金额
     total_cost(state){
       // 选中商品的总价格
       let SelectedGoodsList = state.cartList.filter((item)=>{return item.goods_select})
       let sum =0
       SelectedGoodsList.forEach((item2)=>{sum = sum+item2.goods_count*item2.goods_price})
       return sum
+    },
+    // 已选商品列表
+    SelectedGoodsList(state){
+      return state.cartList.filter((item)=>{return item.goods_select})
     }
   },
   mutations: {
