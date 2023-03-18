@@ -11,6 +11,13 @@
       }
     },
     {
+      "path": "pages/Pay/Pay",
+      "style": {
+        "navigationBarTitleText": "支付页",
+        "enablePullDownRefresh": false
+      }
+    },
+    {
       "path": "pages/cart/cart",
       "style": {
         "navigationBarTitleText": "简易购物车",

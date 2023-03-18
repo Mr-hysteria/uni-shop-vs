@@ -9,11 +9,21 @@ const store = new Vuex.Store({
     cartList: uni.getStorageSync("cartList") || [],
   },
   getters:{
+    // 全选判断
     isAllSelect(state){
       return state.cartList.every((item)=>{return item.goods_select==true})
+    },
+    // 总计金额
+    total_cost(state){
+      // 选中商品的总价格
+      let SelectedGoodsList = state.cartList.filter((item)=>{return item.goods_select})
+      let sum =0
+      SelectedGoodsList.forEach((item2)=>{sum = sum+item2.goods_count*item2.goods_price})
+      return sum
     }
   },
   mutations: {
+    // 加入购物车
     addCart(state, payload) {
       const flagIdex = state.cartList.findIndex(
         (obj) => obj.goods_id == payload.goods_id
@@ -36,6 +46,7 @@ const store = new Vuex.Store({
         uni.setStorageSync("cartList", state.cartList);
       }
     },
+    // 改变选中转态
     changeSelect(state, payload) {
       const index = state.cartList.findIndex((obj) => {
         return obj.goods_id == payload;
@@ -43,6 +54,7 @@ const store = new Vuex.Store({
       state.cartList[index].goods_select =!state.cartList[index].goods_select;
       uni.setStorageSync("cartList", state.cartList);
     },
+    // 全选状态切换
     changeAllSelect(state){
       // 如果flag为真，说明已经全选，那么全部变为false
       // 如果flag为假，那么说明部分或者全部都没有选，那么全部设为true
@@ -52,7 +64,14 @@ const store = new Vuex.Store({
       }else{
         state.cartList.forEach((item)=>{ item.goods_select=true})
       }
+    },
+    // 增加或删除商品
+    changeList(state,goods_id){
+      // 
+      state.cartList = state.cartList.filter((item)=>{
+        return item.goods_id!=goods_id})
+      uni.setStorageSync("cartList", state.cartList);
     }
-  },
+  }
 });
 export default store;

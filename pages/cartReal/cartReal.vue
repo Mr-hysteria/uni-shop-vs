@@ -14,7 +14,8 @@
                     </view>
                 </navigator>
                 <view class="goods-count">
-                    <u-number-box v-model="item.goods_count" @change="changeList"></u-number-box>
+                    <u-number-box v-model="item.goods_count"  @overlimit="changeList(item.goods_id)"
+                        :min="1"></u-number-box>
                 </view>
             </view>
         </view>
@@ -28,10 +29,10 @@
             <!-- 总计 -->
             <view class="total">
                 <text class="total-name">合计:</text>
-                <view class="total-price">999</view>
+                <view class="total-price">{{ total_cost }}</view>
             </view>
             <!-- 结算 -->
-            <view class="account">
+            <view class="account" @click="goToPay">
                 结算
             </view>
         </view>
@@ -39,43 +40,45 @@
 </template>
 
 <script>
-import store from '../../store/store_simple'
+import { mapGetters } from 'vuex'
 
 export default {
     data() {
         return {
             defaultImage: '',
-            goods_name_changeFlag: true
-
         }
     },
     computed: {
         cartList() {
-            // console.log(this.$store.state.cartList)
             return this.$store.state.cartList
         },
-        isAllSelect(){
-            return this.$store.getters.isAllSelect
-        }
-    },
-    // 用监听属性监视购物车数量是否增加
-    watch: {
-        goods_name_changeFlag() {
-            // console.log("执行存储")
-            uni.setStorageSync('cartList', this.$store.state.cartList)
-        }
+        // 全选、总价格
+        ...mapGetters(["isAllSelect", "total_cost"])
     },
     methods: {
-        changeList() {
-            // 点击就改变数据，从而让watch监听
-            this.goods_name_changeFlag = !this.goods_name_changeFlag
+        // 点击增加减少的时候触发
+        changeList(goods_id) {
+            this.$store.commit("changeList",goods_id)
         },
+        // 选中与否触发
         changeGoods_select(goods_id) {
             this.$store.commit("changeSelect", goods_id)
         },
         // 全选状态改变
-        changeAllSelect(){
+        changeAllSelect() {
             this.$store.commit("changeAllSelect")
+        },
+        // 跳转支付页
+        goToPay(){
+            if(this.total_cost==0){
+                uni.showToast({
+                    title: '请选择商品~',
+                    icon: 'success',
+                    mask: false
+                })
+            }else{
+                uni.navigateTo({ url: '/pages/Pay/Pay' })
+            }
         }
     }
 }
@@ -83,6 +86,8 @@ export default {
 
 <style lang="scss" >
 .goods-list {
+    padding-bottom: 80rpx;
+
     .cart-item {
         display: flex;
         position: relative;
@@ -147,15 +152,18 @@ export default {
     left: 0;
     right: 0;
     bottom: 0;
+    background-color: #fff;
     border-top: 1px solid #e0d2d2;
+    z-index: 99;
     display: flex;
     padding: 0 20rpx;
     align-items: center;
+
     .select {
-        
+
         .select-text {
             font-size: 21rpx;
-            margin:0 20rpx;
+            margin: 0 20rpx;
             color: #8A8A8A;
             margin-left: 0;
         }
@@ -165,6 +173,7 @@ export default {
         flex: 1;
         display: flex;
         align-items: center;
+
         .total-name {
             font-size: 26rpx;
             margin-right: 10rpx;
@@ -172,14 +181,15 @@ export default {
 
         .total-price {
             color: #EA4350;
-            &::before{
+
+            &::before {
                 content: '¥';
             }
         }
     }
 
     .account {
-        background-color:#EA4350 ;
+        background-color: #EA4350;
         color: #fff;
         font-size: 22rpx;
         width: 150rpx;
@@ -189,6 +199,5 @@ export default {
         justify-content: center;
         align-items: center;
     }
-}
-</style>
+}</style>
 
