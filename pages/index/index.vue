@@ -1,5 +1,11 @@
 <template>
 	<view class="content">
+		<!-- 模态框 -->
+		<u-modal :show="show" :title="title" @confirm="cancelModal">
+			<view class="slot-content">
+				<rich-text :nodes="content"></rich-text>
+			</view>
+		</u-modal>
 		<!-- 1.搜索栏 -->
 		<Search />
 		<!-- 2.轮播图 -->
@@ -33,6 +39,13 @@
 export default {
 	data() {
 		return {
+			// 模态框内容
+			show: true,
+			title: '说明',
+			content: `<p style="color: red">1.学习所做,仅作为展示,无实际支付功能</p><br>
+			          <p>2.主页为静态图片展示(无跳转)</p><br>
+					  <p>3.分类页跳转与购物车功能完整</p><br>
+					  <p>4.最后附上个人简历</p>`,
 			swiperList: [],
 			NavList: [],
 			floorList: []
@@ -58,6 +71,10 @@ export default {
 		
 	},
 	methods: {
+		// 模态框关闭
+		cancelModal() {
+			this.show = false
+		},
 		// 请求轮播图
 		async getSwiper() {
 			await uni.request({

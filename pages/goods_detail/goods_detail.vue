@@ -48,7 +48,7 @@
 				</view>
 			</view>
 			<view class="btn" @click="handleAddCart">加入购物车</view>
-			<view class="btn">立即购买</view>
+			<view class="btn" @click="handleBuy">立即购买</view>
 		</view>
 	</view>
 </template>
@@ -91,6 +91,12 @@ export default {
 				icon: 'success',
 				mask: true
 			})
+		},
+		// 立即购买
+		handleBuy() {
+			// 把本页商品信息传入vuex，那边进行处理
+			this.$store.commit('addCart', this.GoodsInfo)
+			uni.switchTab({ url: '/pages/cartReal/cartReal' })
 		}
 	}
 }
@@ -197,8 +203,8 @@ export default {
 
 			// background-color: pink;
 			navigator {
-				height: 60rpx;
-				width: 60rpx;
+				height: 70rpx;
+				width: 70rpx;
 			}
 
 		}

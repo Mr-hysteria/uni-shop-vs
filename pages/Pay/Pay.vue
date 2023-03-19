@@ -2,10 +2,14 @@
     <view class="wholePage">
         <!-- 模块1.收获地址 -->
         <view class="address" @click="getUserInfo">
+
             <view class="address-info" v-if="userInfo.userName">
-                <view>{{ FullAddress }}</view>
-                <text>{{ userInfo.userName }}</text>
-                <text>{{ userInfo.telNumber }}</text>
+                <u-icon name="bag" size="60rpx"></u-icon>
+                <view class="address-info2">
+                    <view style="padding-bottom: 20rpx;">{{ FullAddress }}</view>
+                    <text style="color: grey;font-size: 30rpx;">{{ userInfo.userName+'  ' }}</text>
+                    <text style="color: grey;font-size: 30rpx;">{{ userInfo.telNumber }}</text>
+                </view>
             </view>
             <view v-else class="address-btn">
                 <view>+地址</view>
@@ -74,26 +78,33 @@ export default {
                 uni.showToast({
                     title: '请输入收货信息',
                     icon: 'none',
-                    mask: false
+                    mask: false,
                 })
                 return
             }
             // 1.1获取用户信息
             let Info = {}
-            await uni.getUserInfo().then((res)=>Info = res)
-            const {signature,iv,encryptedData,rawData} = Info
+            await uni.getUserInfo().then((res) => Info = res)
+            const { signature, iv, encryptedData, rawData } = Info
             // 1.2获取登录信息
             let logIn = []
-            await uni.login().then((res1)=>logIn = res1)
-            const {code} = logIn
-            const data  ={
+            await uni.login().then((res1) => logIn = res1)
+            const { code } = logIn
+            const data = {
                 signature,
                 iv,
                 encryptedData,
                 rawData,
                 code
             }
-            console.log("Data数据为",data)
+            console.log("Data数据为", data)
+            // 2.后面的过程不再模拟
+            uni.showToast({
+                title: '支付接口尚未完成~',
+                icon: 'error',
+                mask: false
+            })
+            return
         }
     }
 }
@@ -116,14 +127,14 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
 
     .address-info {
-        position: absolute;
-        left: 10rpx;
 
-        text {
-            padding-right: 10rpx;
+        display: flex;
+        // justify-content: center;
+        align-items: center;
+        .address-info2{
+            padding-left: 60rpx;
         }
     }
 
@@ -240,4 +251,5 @@ export default {
         justify-content: center;
         align-items: center;
     }
-}</style>
+}
+</style>
